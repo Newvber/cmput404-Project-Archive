@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Olive - Sign Up</title>
+    <link rel="stylesheet" href="{% static 'css/signup.css' %}">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+</head>
+<body>
+  {% include "navbar.html" %}
+    
+    <div class="main-content">
+        <div class="container">
+            <div class="header-section">
+                <h1 class="brand-name">Olive</h1>
+                <p class="brand-subtitle">SocialDistribution</p>
+            </div>
+
+            <div class="signup-section">
+                <form class="signup-form" id="signup-form">
+                    <div class="form-group">
+                        <label class="form-label">Username</label>
+                        <input 
+                            type="text" 
+                            class="form-input" 
+                            id="username"
+                            placeholder="Your username"
+                            required
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Display Name</label>
+                        <input 
+                            type="text" 
+                            class="form-input" 
+                            id="display_name"
+                            placeholder="Display name"
+                            required
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input 
+                            type="password" 
+                            class="form-input" 
+                            id="password"
+                            placeholder="Password"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Confirm Password</label>
+                        <input 
+                            type="password" 
+                            class="form-input" 
+                            id="confirm_password"
+                            placeholder="Confirm Password"
+                            required
+                        >
+                    </div>
+                    
+                    <button type="submit" class="signup-btn">Sign up</button>
+                </form>
+
+                <div id="message" style="color:red; margin-top:10px;"></div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="{% static 'signup.min.js' %}"></script>
+</body>
+</html>

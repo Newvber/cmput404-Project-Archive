@@ -1,0 +1,200 @@
+/* The following written with completion assistance from Microsoft, Copilot/ ChatGPT, OpenAI 2025-06-18 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: #f5f5f5;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+.top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background-color: white;
+    border-bottom: 1px solid #e5e5e5;
+    display: flex;
+    align-items: center;
+    padding: 0 2rem;
+    z-index: 1000;
+}
+
+.top-bar-icon {
+    width: 48px;
+    height: 48px;
+    background-image: url('icon.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-content {
+    margin-top: 60px;
+    min-height: calc(100vh - 60px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+}
+
+.logo-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo {
+    width: 60px;
+    height: 60px;
+    background-color: #333;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.logo::before {
+    content: '';
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 8px;
+    left: 8px;
+}
+
+.logo::after {
+    content: '';
+    width: 16px;
+    height: 16px;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+}
+
+.brand-name {
+    font-size: 4rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+}
+
+.brand-subtitle {
+    font-size: 1.5rem;
+    color: #888;
+    font-weight: 400;
+}
+
+.login-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-form {
+    background: white;
+    padding: 3rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 400px;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-input {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid #e5e5e5;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s ease;
+    background-color: #fafafa;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #333;
+    background-color: white;
+}
+
+.form-input::placeholder {
+    color: #aaa;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 1rem;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-bottom: 2rem;
+}
+
+.login-btn:hover {
+    background-color: #222;
+}
+
+.signup-section {
+    text-align: center;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e5e5e5;
+}
+
+.signup-text {
+    color: #666;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}
+
+.signup-btn {
+    width: 100%;
+    padding: 1rem;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.signup-btn:hover {
+    background-color: #222;
+}

@@ -1,0 +1,116 @@
+<!-- The following written with completion assistance from Microsoft, Copilot/ ChatGPT, OpenAI 2025-06-18 -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Friends Status</title>
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <link rel="stylesheet" href="{% static 'css/relationships.css' %}">
+</head>
+<body data-current-user-id="{{ author_id }}" data-authenticated="{% if user.is_authenticated %}1{% else %}0{% endif %}">
+  {% include "navbar.html" %}
+  {% comment %} <button onclick="goBackToProfile()">Back to Profile</button> {% endcomment %}
+
+  <h2>Friends Status</h2>
+
+  <div class="tabs">
+    <button class="active" data-tab="friends" onclick="showTab('friends', this)">Friends</button>
+    <button data-tab="followers" onclick="showTab('followers', this)">Followers</button>
+    <button data-tab="following" onclick="showTab('following', this)">Following</button>
+    <button data-tab="pending" onclick="showTab('pending', this)">Pending Requests</button>
+  </div>
+
+  <div id="friends" class="tab-content" style="display: block;">
+    {% for user in friends_list %}
+      <div class="user-card">
+        <div class="user-info">
+          {% if user.profile_image %}
+            <img id="profile-avatar" class="avatar-img" src="{{ user.profile_image }}" alt="Avatar">
+          {% else %}
+            <img id="profile-avatar" class="avatar-img" src="{% static 'avatar.jpg' %}" alt="Avatar">
+          {% endif %}
+
+
+
+          <span>{{ user.display_name }}</span>
+        </div>
+        <div class="action-buttons">
+          <button class="delete-button" onclick="unfollowThem('{{ author_id }}', '{{ user.id }}')">Unfollow</button>
+          <button class="decline-button" onclick="makeThemUnfollowMe('{{ user.id }}', '{{ author_id }}')">Remove Follower</button>
+          <button class="decline-button" onclick="unfriend('{{ author_id }}', '{{ user.id }}')">Unfriend</button>
+        </div>
+      </div>
+    {% empty %}<p>No friends yet.</p>{% endfor %}
+  </div>
+
+  <div id="followers" class="tab-content">
+    {% for item in followers_list %}
+  <div class="user-card">
+    <div class="user-info">
+      {% if item.user.profile_image %}
+        <img id="profile-avatar" class="avatar-img" src="{{ item.user.profile_image }}" alt="Avatar">
+      {% else %}
+        <img id="profile-avatar" class="avatar-img" src="{% static 'avatar.jpg' %}" alt="Avatar">
+      {% endif %}
+      {% comment %} <img src="{{ item.user.avatar_url }}" alt="avatar"> {% endcomment %}
+      <span>{{ item.user.display_name }}</span>
+    </div>
+    <div class="action-buttons">
+      <button class="decline-button" onclick="makeThemUnfollowMe('{{ item.user.id }}', '{{ author_id }}')">Remove Follower</button>
+
+      {% if item.pending %}
+        <button class="follow-button" disabled>Pending</button>
+      {% else %}
+        <button class="follow-button follow"
+                id="follow-btn-{{ item.user.id }}"
+                onclick="sendFollowRequest(this, '{{ author_id }}', '{{ item.user.id }}')">
+          Follow
+        </button>
+      {% endif %}
+    </div>
+  </div>
+{% endfor %}
+  </div>
+
+  <div id="following" class="tab-content">
+    {% for item in following_list %}
+      <div class="user-card">
+        <div class="user-info">
+          {% if item.user.profile_image %}
+            <img id="profile-avatar" class="avatar-img" src="{{ item.user.profile_image }}" alt="Avatar">
+          {% else %}
+            <img id="profile-avatar" class="avatar-img" src="{% static 'avatar.jpg' %}" alt="Avatar">
+          {% endif %}
+          {% comment %} <img src="{{ item.user.avatar_url }}" alt="avatar"> {% endcomment %}
+          <span>{{ item.user.display_name }}</span>
+        </div>
+        <button class="follow-button unfollow" data-from-id="{{ author_id }}" data-to-id="{{ item.user.id }}" onclick="handleUnfollow(this)">Unfollow</button>
+      </div>
+    {% empty %}<p>Not following anyone yet.</p>{% endfor %}
+  </div>
+
+  <div id="pending" class="tab-content">
+    {% for user in pending_requests_list %}
+      <div class="user-card">
+        <div class="user-info">
+
+          {% if user.profile_image %}
+            <img id="profile-avatar" class="avatar-img" src="{{ user.profile_image }}" alt="Avatar">
+          {% else %}
+            <img id="profile-avatar" class="avatar-img" src="{% static 'avatar.jpg' %}" alt="Avatar">
+          {% endif %}
+
+          <span>{{ user.display_name }}</span>
+        </div>
+        <div class="action-buttons">
+          <button class="decline-button" data-from-id="{{ user.id }}" onclick="handleDecline(this)">Decline</button>
+          <button class="accept-button accept" data-from-id="{{ user.id }}" onclick="handleAccept(this)">Accept</button>
+        </div>
+      </div>
+    {% empty %}<p>No pending requests.</p>{% endfor %}
+  </div>
+
+  {% comment %} <script type="module" src="{% static 'relationships.min.js' %}"></script> {% endcomment %}
+</body>
+</html>

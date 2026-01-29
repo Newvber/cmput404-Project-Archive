@@ -1,0 +1,136 @@
+/* The following written with completion assistance from Microsoft, Copilot/ ChatGPT, OpenAI 2025-06-18 */
+.post-form {
+    width: 600px;
+    margin: 20px;
+    font-family: sans-serif;
+}
+
+.post-form label {
+    display: block;
+    margin-bottom: 6px;
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+.post-form input[type="text"],
+.post-form textarea {
+    width: 100%;
+    padding: 12px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+.post-form textarea {
+    height: 120px;
+    resize: vertical;
+}
+
+.post-form button {
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.post-form button:not(.profile-menu button) {
+    font-weight: bold;
+}
+
+.post-form .post-btn {
+    background-color: #000;
+    color: white;
+    border: none;
+}
+
+.post-form .post-btn:hover {
+    background-color: #333;
+}
+
+.post-form .cancel-btn {
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+}
+
+.post-form .cancel-btn:hover {
+    background-color: #ddd;
+}
+
+.post-form .file-select-btn {
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.post-form .file-select-btn:hover {
+    background-color: #ddd;
+}
+
+.post-form .hidden-file-input {
+    display: none;
+}
+
+/* two-column editor + preview */
+.post-form .editor-container {
+    display: flex;
+    gap: 20px;
+    height: 400px;              /* total height */
+    margin-top: 20px;
+}
+
+.post-form .editor-container > div {
+    flex: 1;                    /* share width equally */
+    min-width: 0;               /* allow them to shrink below content’s width */
+    display: flex;
+    flex-direction: column;
+}
+
+.post-form .editor-container label {
+    margin-top: 0;
+    margin-bottom: 8px;
+}
+
+.post-form .editor-container textarea,
+.post-form .editor-container #preview {
+    flex: 1;                    /* fill remaining height */
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 12px;
+    overflow: auto;
+}
+
+.post-form .editor-container textarea {
+    background: #fff;
+    resize: vertical;
+}
+
+.post-form .editor-container #preview {
+    background: #fafafa;
+    white-space: pre-wrap;      /* preserve user newlines */
+    word-break: break-word;     /* wrap long words/URLs */
+}
+
+.post-form .editor-container #preview img {
+    max-width: 100%;
+    height: auto;
+}
+
+#content {
+    resize: none;
+}
+
+#contentType {
+    width: auto;
+    padding: 5px;
+    box-sizing: border-box;
+    border: 1px solid #000000;
+    border-radius: 8px;
+    margin-top: 5px;
+}

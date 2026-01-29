@@ -1,0 +1,128 @@
+<!-- The following written with completion assistance from Microsoft, Copilot/ ChatGPT, OpenAI 2025-06-18 -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ entry.title }}</title>
+  <link rel="stylesheet" href="{% static 'css/entry_detail.css' %}" />
+  <meta name="csrf-token" content="{{ csrf_token }}">
+</head>
+<body data-author-id="{{ entry.author.id }}" data-entry-id="{{ entry.id }}" data-current-user-id="{{ user.id }}" data-authenticated="{% if user.is_authenticated %}1{% else %}0{% endif %}">
+  {% include "navbar.html" %}
+  <div class="entry-container">
+    {% if user.is_authenticated %}
+    <button class="back-btn" onclick="window.location.href='{{ back_url }}'">Back</button>
+    <div style="margin-top: 20px; display: flex; gap: 10px;"></div>
+    {% endif %}
+
+    <div class="dropdown-wrapper" style="display: flex; align-items: center;">
+      {% if user.id == entry.author.id %}
+        <div class="dropdown-container">
+          <button id="dropdown-toggle" class="three-dots-btn">⋯</button>
+          <div id="dropdown-menu" class="dropdown-menu hidden">
+            <button id="edit-entry-btn">✏️ Edit Post</button>
+            <button id="delete-entry-btn">🗑️ Delete Post</button>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+
+
+    <div class="post-header">
+      <div class="post-avatar" data-author-id="{{ entry.author.id }}">
+        {% if entry.author.profile_image %}
+        <img src="{{ entry.author.profile_image }}" alt="Avatar">
+        {% else %}
+        <img src="{% static 'avatar.jpg' %}" alt="Avatar">
+        {% endif %}
+      </div>
+
+      <div class="post-user-info">
+        <div class="username-line">
+          {% with enc_id=entry.author.id|urlencode:'' %}
+          <a class="post-username"
+             href="{% url 'profile_page' enc_id %}">
+              {{ entry.author.display_name }}
+          </a>
+          {% endwith %}
+          </div>
+          <div class="meta-line">
+            <span class="post-time">{{ entry.created_at|date:"F j, Y, g:i a" }}</span>
+            <span class="visibility-type">
+                {% if entry.visibility == "FRIENDS" %}
+                  friends-only entry
+                {% elif entry.visibility == "PUBLIC" %}
+                  public entry
+                {% elif entry.visibility == "UNLISTED" %}
+                  unlisted entry
+                {% else %}
+                  {{ entry.visibility }}
+                {% endif %}
+              </span>
+
+            </div>
+      </div>
+    </div>
+
+    <h1 class="entry-title">{{ entry.title }}</h1>
+
+    {% if entry.description %}
+    <p class="entry-description">{{ entry.description }}</p>
+    {% endif %}
+
+    <div class="entry-content"
+         data-contenttype="{{ entry.contentType }}"
+         data-content="{{ entry.content|escape }}">
+        {% if not entry.contentType or entry.contentType|slice:":5" != "image" and entry.contentType != "application/base64" %}
+            {{ entry.content }}
+        {% endif %}
+    </div>
+
+    {% if entry.contentType and entry.contentType|slice:":5" == "image" or entry.contentType == "application/base64" %}
+      <img src="{% url 'entry-image' entry.author.uuid entry.uuid %}" alt="Post Image">
+    {% endif %}
+
+    {% if user.is_authenticated %}
+    <div class="post-actions">
+      <button class="action-btn like-btn"
+            data-post-id="{{ entry.id }}"
+            data-author-id="{{ entry.author.id }}">
+          <span class="action-icon">❤️</span>
+          <span class="action-text like-count">{{ entry.likes.count }} Likes</span>
+      </button>
+      <button class="action-btn share-btn"
+          onclick="navigator.clipboard.writeText(window.location.origin + '/authors/{{ entry.author.uuid }}/entries/{{ entry.id }}/'); alert('Post link copied!')">
+          <span class="action-icon">🔗</span>
+          <span class="action-text">Copy link to clipboard</span>
+      </button>
+    </div>
+
+    
+
+    <hr>
+
+    <h2>Comments</h2>
+    <div class="comment-action">
+      <button id="show-comment-form-btn" class="comment-btn">Write a Comment</button>
+    </div>
+    <div id="comment-form" style="display: none; margin-top: 10px;">
+      <textarea id="comment-text" rows="4" style="width: 100%;" placeholder="Write your comment..."></textarea>
+      <div style="margin-top: 5px;">
+        <button type="button" id="send-comment-btn" class="comment-btn">Send</button>
+        <button type="button" id="cancel-comment-btn" class="comment-btn">Cancel</button>
+      </div>
+    </div>
+    <div class="comments-section">
+
+    </div>
+  </div>
+  {% endif %}
+
+  <script type="module" src="{% static 'feed.min.js' %}"></script>
+  <script type="module" src="{% static 'renderPosts.min.js' %}"></script>
+  <script type="module" src="{% static 'entryDetail.min.js' %}"></script>
+
+</body>
+</html>

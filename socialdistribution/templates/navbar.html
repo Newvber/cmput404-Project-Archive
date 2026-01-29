@@ -1,0 +1,57 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+
+<div class="top-bar">
+  <div class="top-bar-left">
+    <div class="top-bar-icon">
+      <a href="{% url 'feed_page' %}">
+        <img src="{% static 'favicon.png' %}">
+      </a>
+    </div>
+  </div>
+
+
+  {% if user.is_authenticated %}
+  <div class="top-bar-center">
+    <form action="{% url 'author_search' %}" method="get" class="navbar-search-form" autocomplete="off" onsubmit="return false">
+      <span class="search-icon">🔍</span>
+      <input
+        type="text"
+        name="q"
+        placeholder="Search authors..."
+        class="navbar-search-input with-icon"
+        id="author-search-input"
+      />
+      <ul class="search-suggestions" id="search-suggestions"></ul>
+    </form>
+  </div>
+  {% endif %}
+
+  <div class="user-profile" id="profile-toggle">
+    <div class="user-avatar">
+      {% if user.is_authenticated and user.profile_image %}
+      <img src="{{ user.profile_image }}" alt="Avatar">
+      {% else %}
+      <img src="{% static 'avatar.jpg' %}" alt="Avatar">
+      {% endif %}
+    </div>
+    <span class="username">
+      {% if user.is_authenticated %}
+      {{ user.display_name }}
+      {% else %}
+      Guest
+      {% endif %}
+    </span>
+    <div class="profile-menu" id="profile-menu" style="display: none;">
+      {% if user.is_authenticated %}
+      <a href="#"
+         onclick="window.location.href = '/authors/' + encodeURIComponent('{{ user.id }}') + '/'; return false;">Profile</a>
+      <a href="#" id="logout-btn">Logout</a>
+      {% else %}
+      <a href="/login/">Login</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script type="module" src="{% static 'navbar.min.js' %}"></script>

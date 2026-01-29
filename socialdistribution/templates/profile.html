@@ -1,0 +1,249 @@
+<!-- The following written with completion assistance from Microsoft, Copilot/ ChatGPT, OpenAI 2025-06-18 -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Profile</title>
+  <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+  <meta name="csrf-token" content="{{ csrf_token }}">
+</head>
+<body data-profile-id="{{ profile_author.id }}" data-current-user-id="{{ user_id }}" data-is-self="{{ is_self }}" data-authenticated="{% if user.is_authenticated %}1{% else %}0{% endif %}">
+  {% include "navbar.html" %}
+  <!-- Profile Info -->
+  <div class="profile-header">
+    <div class="avatar">
+      {% if profile_author.profile_image %}
+        <img id="profile-avatar" class="avatar-img" src="{{ profile_author.profile_image }}" alt="Avatar">
+      {% else %}
+        <img id="profile-avatar" class="avatar-img" src="{% static 'avatar.jpg' %}" alt="Avatar">
+      {% endif %}
+    </div>
+
+    <div class="profile-info">
+      <!-- <div class="user-id">Name</div> -->
+      <div class="user-id">{{ profile_author.display_name }}</div>
+
+      <div class="follow-stats">
+        <!-- <span id="follower-count">123</span> Followers -->
+        <span id="follower-count">{{ follower_count }}</span> Followers
+
+        &nbsp;<span>●</span>&nbsp;
+        <!-- <span id="following-count">456</span> Following -->
+        <span id="following-count">{{ following_count }}</span> Following
+
+      </div>
+
+      <div class="description" id = "description-text">
+      {{ profile_author.description|default:"This is your profile description. You can describe yourself here in a few sentences." }}
+      </div>
+      {% if is_self %}
+        <textarea id="edit-description-input" style="display:none;"></textarea>
+        <div id="edit-description-buttons" style="display:none;">
+          <button id="save-description-btn">Save</button>
+          <button id="cancel-description-btn">Cancel</button>
+        </div>
+        <button id="edit-description-btn">Edit Description</button>
+      {% endif %}
+      
+      {% if profile_author.github_link %}
+      <div class="github">
+        <a id="github-link-display" href="{{ profile_author.github_link }}" target="_blank">{{ profile_author.github_link }}</a>
+      </div>
+      {% endif %}
+      <div class="profile-buttons">
+        {% if is_authenticated %}
+          {% if is_self %}
+            <button id="edit-profile-btn">Edit Profile</button>
+            <button id="open-relationships-modal">Follow Manager</button>
+            {% comment %} <a href="#"
+              onclick="window.location.href = '/profile/' + encodeURIComponent('{{ user.id }}') + '/relationships/'; return false;">
+              <button id="follow-manager-btn" type="button">Follow Manager</button>
+            </a> {% endcomment %}
+            <button id="update-btn">Update</button>
+          {% else %}
+            {% if relationship == "pending" %}
+              <button id="follow-btn" data-following="pending">Cancel request</button>
+            {% elif relationship == "following" %}
+              <button id="follow-btn" data-following="true">Unfollow</button>
+            {% else %}
+              <button id="follow-btn" data-following="false">Follow</button>
+            {% endif %}
+            <button id="update-btn">Update</button>
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Posts Lists -->
+ <div class="posts-container">
+    {% for post in posts %}
+    <div class="post">
+        <div class="post-header">
+            <div class="post-avatar">
+              {% if post.author.profile_image %}
+                <img src="{{ post.author.profile_image }}" alt="Avatar">
+              {% else %}
+                <img src="{% static 'avatar.jpg' %}" alt="Avatar">
+              {% endif %}
+            </div>
+            <div class="post-user-info">
+              <div class="post-username">{{ post.author.display_name }}</div>
+              <div class="meta-line">
+                <span class="post-time">{{ post.created_at|date:"F j, Y, g:i a" }}</span>
+                <span class="visibility-type 
+                  {% if post.visibility == 'PUBLIC' %}visibility-type-public
+                  {% elif post.visibility == 'FRIENDS' %}visibility-type-friends
+                  {% elif post.visibility == 'UNLISTED' %}visibility-type-unlisted
+                  {% endif %}">
+                  {% if post.visibility == 'PUBLIC' %}
+                    public entry
+                  {% elif post.visibility == 'FRIENDS' %}
+                    friends-only entry
+                  {% elif post.visibility == 'UNLISTED' %}
+                    unlisted entry
+                  {% else %}
+                    {{ post.visibility }}
+                  {% endif %}
+                </span>
+              </div>
+            </div>
+        </div>
+        <div class="post-content">
+            <a href="{% url 'entry_page' author_id=post.author.uuid entry_id=post.id|urlencode:'' %}">
+                <h3 class="post-title">{{ post.title }}</h3>
+            </a>
+            {% if post.description %}
+            <p class="post-description">{{ post.description }}</p>
+            {% endif %}
+            <p class="post-body" data-contenttype="{{ post.contentType }}" data-content="{{ post.content|escape }}">
+                {% if not post.contentType or post.contentType|slice:":5" != "image" and post.contentType != "application/base64" %}
+                    {{ post.content }}
+                {% endif %}
+            </p>
+            {% if post.contentType and post.contentType|slice:":5" == "image" or post.contentType == "application/base64" %}
+                <img src="{% url 'entry-image' post.author.uuid post.uuid %}" alt="Image" />
+            {% endif %}
+        </div>
+        {% if user.is_authenticated %}
+        <div class="post-actions">
+            <button class="action-btn like-btn" data-post-id="{{ post.id }}" data-author-id="{{ post.author.id }}">
+                <span class="action-icon">❤️</span>
+                <span class="action-text like-count">{{ post.likes.count }} Likes</span>
+            </button>
+            <button class="action-btn comment-btn"
+                    data-post-id="{{ post.id }}"
+                    data-author-id="{{ post.author.id }}">
+                <span class="action-icon">💬</span>
+                <span class="action-text comment-count">{{ post.comments.count }} Comments</span>
+            </button>
+            <button class="action-btn share-btn"
+                    onclick="navigator.clipboard.writeText(window.location.origin + '/authors/{{ post.author.uuid }}/entries/{{ post.id }}/'); alert('Post link copied!')">
+                <span class="action-icon">🔗</span>
+                <span class="action-text">Copy link to clipboard</span>
+            </button>
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+
+
+
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settingsModal">
+      <div class="modal-light">
+        <span class="close-btn" onclick="closeSettings()">×</span>
+        <div class="header">
+          {% comment %} <img class="avatar-sm" src="{% static 'avatar.jpg' %}" alt="Avatar"> {% endcomment %}
+          <div class="name">{{ profile_author.display_name }}</div>
+          <div class="username">@{{ profile_author.username }}</div>
+        </div>
+        <ul class="settings-list">
+          <li onclick="openChangeAvatar()">Change Avatar <span class="arrow">›</span></li>
+          <li onclick="openChangeName()">Change Name <span class="arrow">›</span></li>
+          <li onclick="openChangeUsername()">Change Username <span class="arrow">›</span></li>
+          <li onclick="openChangePassword()">Change Password <span class="arrow">›</span></li>
+          <li onclick="openLinkGithub()">Link Github <span class="arrow">›</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Change Avatar Sub-Modal -->
+    <div class="modal-overlay" id="changeAvatarModal">
+      <div class="modal-sub">
+        <span class="close-btn" onclick="closeChangeAvatar()">×</span>
+        <h3>Change Avatar</h3>
+        <label>Image File</label>
+        <input type="file" id="avatar-file-input" accept="image/*">
+        <label>Or Image URL</label>
+        <input type="text" id="avatar-url-input" placeholder="Enter image URL">
+        <button class="btn-done" id="change-avatar-submit">Done</button>
+      </div>
+    </div>
+
+    <!-- Change Name Sub-Modal -->
+    <div class="modal-overlay" id="changeNameModal">
+      <div class="modal-sub">
+        <span class="close-btn" onclick="closeChangeName()">×</span>
+        <h3>Change Name</h3>
+        <label>Name</label>
+        <input type="text" id="new-display-name" placeholder="Enter new name…">
+        <button class="btn-done" id="change-name-submit">Done</button>
+      </div>
+    </div>
+
+    <!-- Change Username Sub-Modal -->
+    <div class="modal-overlay" id="changeUsernameModal">
+      <div class="modal-sub">
+        <span class="close-btn" onclick="closeChangeUsername()">×</span>
+        <h3>Change Username</h3>
+        <label>Username</label>
+        <input type="text" id="new-username" placeholder="Enter your new username">
+        <button class="btn-done" id="change-username-submit">Done</button>
+      </div>
+    </div>
+
+    <!-- Change Password Sub-Modal -->
+    <div class="modal-overlay" id="changePasswordModal">
+      <div class="modal-sub">
+        <span class="close-btn" onclick="closeChangePassword()">×</span>
+        <h3>Change Password</h3>
+        <label>Enter your new password</label>
+        <input type="password" id="new-password" placeholder="Enter your new password">
+        <label>Confirm your new password</label>
+        <input type="password" id="confirm-password" placeholder="Confirm your new password">
+        <button class="btn-done" id="change-password-submit">Done</button>
+      </div>
+    </div>
+
+    <!-- Link Github Sub-Modal -->
+    <div class="modal-overlay" id="linkGithubModal">
+      <div class="modal-sub">
+        <span class="close-btn" onclick="closeLinkGithub()">×</span>
+        <h3>Link Github</h3>
+        <label>Github Link</label>
+        <input type="text" id="github-link-input" placeholder="Enter your Github Link" value="{{ profile_author.github_link }}">
+        <button class="btn-done" id="link-github-submit">Link</button>
+      </div>
+    </div>
+
+    <!-- relationships modal -->
+    <div id="relationships-modal" class="modal-overlay" style="display: none;">
+      <div class="modal-light">
+        <span class="close-btn" id="close-relationships-modal">×</span>
+        <div id="relationships-content"></div>
+      </div>
+    </div>
+  <!-- Scripts -->
+  {% comment %} <script src="{% static 'renderPosts.min.js' %}"></script> {% endcomment %}
+  <script>
+    window.STATIC_URL = "{% static '' %}";
+  </script>
+  <script src="{% static 'profile.min.js' %}"></script>
+  <script type="module" src="{% static 'renderPosts.min.js' %}"></script>
+  <script type="module" src="{% static 'relationships.min.js' %}"></script>
+</body>
+</html>

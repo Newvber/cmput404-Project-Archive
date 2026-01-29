@@ -1,0 +1,75 @@
+<!-- The following written with completion assistance from Microsoft, Copilot/ ChatGPT, OpenAI 2025-06-18 -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <link rel="stylesheet" href="{% static 'css/write_new_post.css' %}">
+    <title>Edit Post</title>
+</head>
+<body data-initial-content-type="{{ entry.contentType }}" data-initial-content="{{ entry.content|escape }}" data-initial-mime="{{ entry.contentType|cut:';base64' }}" data-author-id="{{ entry.author.id }}" data-entry-id="{{ entry.id }}" data-authenticated="{% if user.is_authenticated %}1{% else %}0{% endif %}">
+    {% include "navbar.html" %}
+    <h1>Edit Post</h1>
+    <form id="new-post-form" class="post-form">
+        {% csrf_token %}
+        <label for="title">Title</label>
+        <input type="text" id="title" name="title" placeholder="Value" value="{{ entry.title }}">
+
+        <label for="description">Description</label>
+        <input type="text" id="description" name="description" placeholder="Short summary" value="{{ entry.description }}">
+
+        <div class="editor-container">
+        <!-- Markdown editor -->
+            <div>
+                <label for="content">Content</label>
+                <textarea id="content" name="content" placeholder="Write your post…">{% if entry.contentType|slice:":5" != "image" and entry.contentType != 'application/base64' %}{{ entry.content }}{% endif %}</textarea>
+            </div>
+        <!-- Live preview -->
+            <div>
+                <label>Preview</label>
+                <div id="preview"></div>
+            </div>
+        </div>
+
+        <button type="button" id="uploadImageBtn" class="file-select-btn" style="display: none;">Upload Image</button>
+        <input type="file" id="image" accept="image/*" class="hidden-file-input">
+        <button type="button" id="insertImageBtn" class="file-select-btn" style="display: none;">Insert Image</button>
+
+        <label for="contentType">Content Format</label>
+        <select id="contentType" name="contentType">
+            <option value="text/plain" {% if entry.contentType == 'text/plain' %}selected{% endif %}>Plain text</option>
+            <option value="text/markdown" {% if entry.contentType == 'text/markdown' %}selected{% endif %}>CommonMark</option>
+            <option value="image" {% if entry.contentType|slice:":5" == 'image' or entry.contentType == 'application/base64' %}selected{% endif %}>Image only</option>
+        </select>
+        
+        <label>Visibility</label>
+        <div style="display: flex; gap: 20px; margin-top: 10px;">
+            <label>
+                <input type="radio" name="visibility" value="public" {% if entry.visibility == 'PUBLIC' %}checked{% endif %}>
+                Public
+            </label>
+            <label>
+                <input type="radio" name="visibility" value="unlisted" {% if entry.visibility == 'UNLISTED' %}checked{% endif %}>
+                Unlisted
+            </label>
+            <label>
+                <input type="radio" name="visibility" value="friends" {% if entry.visibility == 'FRIENDS' %}checked{% endif %}>
+                Friends-only
+            </label>
+        </div>
+
+
+        <div style="margin-top: 20px; display: flex; gap: 10px;">
+            <button type="button" class="cancel-btn" >Cancel</button>
+            <button type="button" class="post-btn">Save</button>
+        </div>
+    </form>
+
+    <script type="module" src="{% static 'editEntry.min.js' %}"></script>
+    <script type="module" src="{% static 'livePreview.min.js' %}"></script>
+</body>
+
+
+</html>

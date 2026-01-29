@@ -1,0 +1,302 @@
+/* The following written with completion assistance from Microsoft, Copilot/ ChatGPT, OpenAI 2025-06-18 */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+.entry-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.entry-title {
+  font-size: 2rem;
+}
+
+.entry-description {
+  font-size: 0.95rem;
+  color: #888;
+  margin-bottom: 1rem;
+}
+
+.entry-content {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+.entry-container img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+h2 {
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #ccc;
+  padding-bottom: 0.5rem;
+}
+
+.comments-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.comment-box {
+  display: flex;
+  align-items: flex-start;
+  background-color: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.comment-avatar img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+}
+
+.comment-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.comment-author {
+  font-weight: bold;
+  margin-bottom: 0.3rem;
+}
+
+.comment-text {
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.action-icon {
+  width: 16px;
+  height: 16px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: inline-block;
+}
+
+.comment-actions {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.comment-action-btn {
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.comment-action-btn:hover {
+  background-color: #ebe2e2;
+}
+
+.action-text {
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.post-avatar {
+  width: 40px;
+  height: 40px;
+  background-color: #ddd;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.post-avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+.post-user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.post-username {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+}
+
+.post-username:hover {
+  text-decoration: underline;
+  color: #666;
+}
+
+.post-time {
+  font-size: 0.9rem;
+  color: #666;
+  white-space: nowrap;
+}
+
+.meta-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.visibility-type {
+  display: inline-block;
+  font-size: 0.75rem;
+  color: #444;
+  padding: 2px 8px;
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.back-btn {
+  background-color: #000;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.back-btn:hover {
+  background-color: #333;
+}
+
+.three-dots-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.hidden {
+  display: none;
+}
+
+.dropdown-container {
+  position: relative;
+  display: inline-block;
+  margin-left: auto;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 999;
+  width: max-content;
+  min-width: 150px;
+}
+
+.dropdown-menu button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.dropdown-menu button:hover {
+  background-color: #f0f0f0;
+}
+
+.post-actions {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.action-btn:hover {
+  background-color: #f8f8f8;
+}
+
+.action-icon {
+  width: 16px;
+  height: 16px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: inline-block;
+}
+
+.action-text {
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.post-actions .share-btn {
+  margin-left: auto;
+}
+
+.comment-btn {
+  background-color: #000;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.comment-btn:hover {
+  background-color: #333;
+}

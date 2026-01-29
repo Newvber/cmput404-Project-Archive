@@ -1,0 +1,122 @@
+<!-- The following written with completion assistance from Microsoft, Copilot/ ChatGPT, OpenAI 2025-06-18 -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Olive - Feed</title>
+    <link rel="stylesheet" href="{% static 'css/feed.css' %}">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+</head>
+<body data-current-user-id="{% if user.is_authenticated %}{{ user.id }}{% endif %}" data-authenticated="{% if user.is_authenticated %}1{% else %}0{% endif %}">
+    {% include "navbar.html" %}
+    <div class="main-content">
+        <div class="container">
+            <div class="feed-header">
+                <h1 class="feed-title">Feed</h1>
+                {% if user.is_authenticated %}
+                    <button id="new-post-btn" class="new-post-btn">New Post</button>
+                {% endif %}
+            </div>
+
+            <div class="posts-container">
+                {% if entries %}
+                    {% for post in entries %}
+                    <div class="post">
+
+                        <div class="post-header">
+                            <div class="post-avatar" data-author-id="{{ post.author.id }}">
+                                {% if post.author.profile_image %}
+                                <img src="{{ post.author.profile_image }}" alt="Avatar">
+                                {% else %}
+                                <img src="{% static 'avatar.jpg' %}" alt="Avatar">
+                                {% endif %}
+                            </div>
+                            
+                            <div class="post-user-info">
+                                <div class="username-line">
+                                {% with enc_id=post.author.id|urlencode:'' %}
+                                <a class="post-username"
+                                   href="{% url 'profile_page' enc_id %}">
+                                    {{ post.author.display_name }}
+                                </a>
+                                {% endwith %}
+                                </div>
+                                <div class="meta-line">
+                                <span class="post-time">{{ post.created_at|date:"F j, Y, g:i a" }}</span>
+                                <span class="visibility-type">
+                                    {% if post.visibility == "FRIENDS" %}
+                                      friends-only entry
+                                    {% elif post.visibility == "PUBLIC" %}
+                                      public entry
+                                    {% elif post.visibility == "UNLISTED" %}
+                                      unlisted entry
+                                    {% else %}
+                                      {{ post.visibility }}
+                                    {% endif %}
+                                  </span>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="post-content">
+                            {% if user.is_authenticated %}
+                                <a href="javascript:void(0)"
+                                    class="post-title-link"
+                                    data-author-id="{{ post.author.id }}"
+                                    data-post-id="{{ post.id }}">
+                                    <h3 class="post-title">{{ post.title }}</h3>
+                                </a>
+                            {% else %}
+                                <h3 class="post-title">{{ post.title }}</h3>
+                            {% endif %}
+                            {% if post.description %}
+                                <p class="post-description">{{ post.description }}</p>
+                            {% endif %}
+                            <p class="post-body" data-contenttype="{{ post.contentType }}" data-content="{{ post.content|escape }}">
+                                {% if not post.contentType or post.contentType|slice:":5" != "image" and post.contentType != "application/base64" %}
+                                    {{ post.content }}
+                                {% endif %}
+                            </p>
+                            {% if post.contentType and post.contentType|slice:":5" == "image" or post.contentType == "application/base64" %}
+                                <img src="{% url 'entry-image' post.author.uuid post.uuid %}" alt="Image" />
+                            {% endif %}
+                        </div>
+
+                        {% if user.is_authenticated %}
+                        <div class="post-actions">
+                            <button class="action-btn like-btn" 
+                                    data-post-id="{{ post.id }}"
+                                    data-author-id="{{ post.author.id }}">
+                                <span class="action-icon">❤️</span>
+                                <span class="action-text like-count">{{ post.likes.count }} Likes</span>
+                            </button>
+                            <button class="action-btn comment-btn"
+                                    data-post-id="{{ post.id }}"
+                                    data-author-id="{{ post.author.id }}">
+                                <span class="action-icon">💬</span>
+                                <span class="action-text comment-count">{{ post.comments.count }} Comments</span>
+                            </button>
+                            <button class="action-btn share-btn"
+                                onclick="navigator.clipboard.writeText(window.location.origin + '/authors/{{ post.author.uuid }}/entries/{{ post.id }}/'); alert('Post link copied!')">
+                            <span class="action-icon">🔗</span>
+                            <span class="action-text">Copy link to clipboard</span>
+                        </button>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No posts yet. Click "New Post" to make your first one!</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="{% static 'feed.min.js' %}"></script>
+    <script type="module" src="{% static 'renderPosts.min.js' %}"></script>
+</body>
+</html>

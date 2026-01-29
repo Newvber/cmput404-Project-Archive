@@ -1,0 +1,34 @@
+# Python bytecode & packaging
+__pycache__/
+*.py[cod]
+__pypackages__/
+
+# Django SQLite DB
+db.sqlite3
+*.sqlite3
+
+# Environment variables & virtualenv
+.env
+.env.*
+.venv/
+venv/
+
+# Django migrations (only ignore cache, keep migration scripts)
+*/migrations/__pycache__/
+*/migrations/*.pyc
+
+# VSCode & editor settings
+.vscode/
+.cursorignore
+.cursorindexingignore
+
+# macOS system files
+.DS_Store
+
+# Node modules
+node_modules/
+
+# *.min.js
+# *.min.js.map
+
+staticfiles/

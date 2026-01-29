@@ -1,0 +1,61 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Olive - Login</title>
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+
+    <!-- include the CSRF token in JS requests by retrieving it from the HTML meta tag -->
+    <meta name="csrf-token" content="{{ csrf_token }}">
+</head>
+<body>
+    {% include "navbar.html" %}
+    <div class="main-content">
+        <div class="container">
+            <div class="logo-section">
+                <div class="logo"></div>
+                <h1 class="brand-name">Olive</h1>
+                <p class="brand-subtitle">SocialDistribution</p>
+            </div>
+
+            <div class="login-section">
+                <form class="login-form" id="login-form">
+                    <div class="form-group">
+                        <input 
+                            type="text" 
+                            class="form-input" 
+                            id="username" 
+                            placeholder="Enter your username."
+                            required
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <input 
+                            type="password" 
+                            class="form-input" 
+                            id="password" 
+                            placeholder="Enter your password."
+                            required
+                        >
+                    </div>
+                    
+                    <button type="submit" class="login-btn">Log in</button>
+                    
+                    <div class="signup-section">
+                        <p class="signup-text">Don't have an account?</p>
+                        <button type="button" class="signup-btn" onclick="window.location.href='/signup/'">Sign up</button>
+                    </div>
+                </form>
+
+                <div id="message" style="color:red; margin-top:10px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="{% static 'login.min.js' %}"></script>
+</body>
+</html>
